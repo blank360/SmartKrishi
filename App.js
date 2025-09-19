@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Home from './Screens/Home';
 import Login from './Screens/Login';
+import Camera from './Screens/Camera';
 
 export default function App() {
   const Stack = createStackNavigator();
@@ -14,6 +15,7 @@ export default function App() {
     >
       <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
       <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>
+      <Stack.Screen name="CameraScreen" component={Camera} options={{headerShown:false}}/>
     </Stack.Navigator>
    </NavigationContainer>
   );
