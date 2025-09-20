@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Text, TouchableOpacity, TextInput } from "react-native";
-import { CONFIG, FIREBASE_APP } from "../firebaseConfig";
+import { CONFIG, FIREBASE_APP, FIREBASE_DB } from "../firebaseConfig";
 import auth, { getAuth, onAuthStateChanged, signInWithPhoneNumber } from "@react-native-firebase/auth";
 import { getApp, initializeApp } from "@react-native-firebase/app";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 export default function Login({navigation}) {
   const [change,setchange] = useState(false);
@@ -33,9 +34,24 @@ export default function Login({navigation}) {
 
   useEffect(() => {
   const unsubscribe = onAuthStateChanged(getAuth(firebaseApp), (user) => {
-    if (user) {
-      navigation.replace("Home");
-    }
+    const takeref = collection(FIREBASE_DB,"Profile");
+    const newquereyref = query(takeref, where("userID", "==", user.uid));
+
+    if(user){
+            getDocs(newquereyref).then((data) => {
+                if(data.empty){
+                    console.log("You are signed in");
+                    navigation.navigate('Account',{flag:true,id:user.uid});
+                }else{
+                    console.log("You are signed in");
+                    navigation.navigate('Home',{id:user.uid});
+                }   
+            }).catch((error) => {
+                console.error("Error getting document:", error);
+            });
+        }else{
+            alert('You are signed out');
+        }
   });
   return unsubscribe;
 }, [navigation]);
